@@ -23,7 +23,8 @@ for file_path in all_paths:
     export_info[folder_name] = new_df
 date = time.strftime("%Y%m%d")
 # UPDATE OUTPUT PATH
-writer = pd.ExcelWriter("Downloads/mdpcp_checks/file_name_checks_{}".format(date), engine='xlsxwriter')
+writer = pd.ExcelWriter("Downloads/mdpcp_checks/file_name_checks_{}".format(date), engine='xlsxwriter') # pylint: disable=abstract-class-instantiated
+# not sure if above commented pylint line needed in pycharm
 for sheet_name, table in export_info.items():
     table.to_excel(writer, sheet_name=sheet_name)
 writer.save()

@@ -75,6 +75,26 @@ sandwichPartsAndPrices = [{'category': 'Bread'
 # how do I just subscript and key into the array of dictionaries?
 print(fileDictionary[0]['orgId'])
 
+# make a simpler key value sandwich dictionary and iterate through it. 
+
+sandwichDict = {'bread|white': 8.50
+                , 'bread|wheat': 9.00
+                , 'bread|sourdough': 9.50
+                , 'protein|chicken': 5
+                , 'protein|turkey': 6
+                , 'protein|ham': 6
+                , 'protein|tofu': 5
+                , 'cheese|cheddar': 1
+                , 'cheese|Swiss': 2
+                , 'cheese|mozzarella': 1
+                , 'condiment|mayo': 1
+                , 'condiment|mustard': 1
+                , 'condiment|lettuce': 1
+                , 'condiment|tomato': .50}
+
+
+for k, v in sandwichDict.items():
+    print('Key: ' + str(k) + ' Value: ' + str(v)) # have to cast v to str
 
 fatArray = ['triglicerides', 'HDL', 'LDL', 'HDL-LDL Ratio', 'Omega 3s', 'Omega 6s', 'insulin', 'glycogen', 'saturated fat', 'sodium', 'potassium', 'vitamin D']
 
