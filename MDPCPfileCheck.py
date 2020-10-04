@@ -9,7 +9,7 @@ all_paths = [
     # "Downloads/mdpcp_checks/folder_2"
     # "Downloads/mdpcp_checks/folder_3"
     # "Downloads/mdpcp_checks/folder_4"
-    "D:\Users\\michael.oconnor\\q2\\attribRptsUnzipd"
+    "D:\\Users\\michael.oconnor\\q2\\attribRptsUnzipd"
 ]
 export_info = {}
 for file_path in all_paths:
@@ -26,9 +26,9 @@ for file_path in all_paths:
     export_info[folder_name] = new_df
 date = time.strftime("%Y%m%d")
 # UPDATE OUTPUT PATH
-writer = pd.ExcelWriter("D:\Users\\michael.oconnor\\file_name_checksAttrib{}.xlsx".format(date), engine='xlsxwriter')
+writer = pd.ExcelWriter("D:\\Users\\michael.oconnor\\file_name_checksAttrib{}.xlsx".format(date), engine='xlsxwriter') # pylint: disable=abstract-class-instantiated
 # Downloads/mdpcp_checks/file_name_checks_
-# not sure if above commented pylint line needed in pycharm
+# not sure if above commented pylint line needed in pycharm, it's not needed in pycharm on Windows
 for sheet_name, table in export_info.items():
     table.to_excel(writer, sheet_name=sheet_name)
 writer.save()
