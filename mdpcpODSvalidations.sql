@@ -426,3 +426,37 @@ SELECT ORG_ID
 , UNNECESSARY_CARE_PAID_TO_PCP_TIN
 , ATTRIBUTION_TYPE
 FROM SNAPSHOT_PROD_A2841_20210107_PRESTO_FINAL.INSIGHTS.PROFILE_LIST_ACO
+
+
+USE WAREHOUSE int_a2841;
+USE DATABASE int_a2841;
+
+--from aco_x_patient_month.sql
+
+        SELECT
+              excl.org_src_id as org_src_id
+            , split_part(excl.fk_bene_id,'|',2) as beneficiary_id
+            , excl.fk_assgn_hdr_id as fk_assgn_hdr_id
+            , CASE
+                  WHEN src_bene_death_date_prior_excl_flg = '1'     THEN 'death_date_prior'
+                  WHEN src_bene_prt_a_b_only_excl_flg = '1'         THEN 'pt_ab_only'
+                  WHEN src_bene_id_missing_excl_flg = '1'           THEN 'bene_id_missing'
+                  WHEN src_bene_reside_outside_us_excl_flg = '1'    THEN 'reside_outside_us'
+                  WHEN src_bene_other_shared_savings_excl_flg = '1' THEN 'other_shared_savings'
+                  WHEN src_bene_one_mnth_mhp_excl_flg = '1'         THEN 'one_month_mhp'
+                  ELSE '#NA'
+              END as turnover_reason_cd
+            , FALSE as assignable_curr_period_flag
+            , CASE
+                  WHEN split_part(excl.fk_bene_id,'|',2) IS NULL
+                      THEN
+                          FALSE
+                      ELSE
+                          TRUE
+              END AS turnover_curr_period_flag
+        FROM --SNAPSHOT_PROD_A2841_20210107_PRESTO_FINAL.ods.cclf_assgn_1_summ excl 
+        ods.cclf_assgn_1_summ excl  
+        WHERE src_bene_excl_flg = '1'
+            AND record_status_cd = 'a'
+            AND SPLIT_PART(excl.fk_assgn_hdr_id,'|',3) = 'q-2020-4'
+            
