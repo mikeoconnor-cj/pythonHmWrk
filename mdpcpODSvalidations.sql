@@ -460,3 +460,14 @@ USE DATABASE int_a2841;
             AND record_status_cd = 'a'
             AND SPLIT_PART(excl.fk_assgn_hdr_id,'|',3) = 'q-2020-4'
             
+
+SELECT ERA_835_VISIT_NK
+  , SRC_TOTAL_CLAIM_CHARGE_AMOUNT
+  , SRC_TOTAL_PAID_AMT
+  , count(*) AS rwCnt
+FROM ODS.CHC_ERA_835
+WHERE EFFECTIVE_FLAG = TRUE
+GROUP BY ERA_835_VISIT_NK
+  , SRC_TOTAL_CLAIM_CHARGE_AMOUNT
+  , SRC_TOTAL_PAID_AMT
+HAVING count(*) > 1
