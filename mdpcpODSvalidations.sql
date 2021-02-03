@@ -471,3 +471,39 @@ GROUP BY ERA_835_VISIT_NK
   , SRC_TOTAL_CLAIM_CHARGE_AMOUNT
   , SRC_TOTAL_PAID_AMT
 HAVING count(*) > 1
+
+SELECT DISTINCT physician_npi
+FROM 
+(
+SELECT attribution_type
+  , month_cd
+  , org_id
+  , physician_npi
+  , count(*) AS rwCnt
+FROM prod_a2024.insights.profile_list_pcp
+GROUP BY attribution_type
+  , month_cd
+  , org_id
+  , physician_npi
+HAVING count(*) > 1
+) a
+
+
+SELECT attribution_type
+  , month_cd
+  , org_id
+  , physician_npi
+  , count(*) AS rwCnt
+FROM prod_a2024.insights.profile_list_pcp
+GROUP BY attribution_type
+  , month_cd
+  , org_id
+  , physician_npi
+HAVING count(*) > 1
+
+SELECT *
+FROM prod_a1052.insights.profile_list_pcp
+WHERE ATTRIBUTION_TYPE = ''
+  AND MONTH_CD = ''
+  AND org_id  = 'A2024'
+  AND PHYSICIAN_NPI = ''
