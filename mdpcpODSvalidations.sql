@@ -584,3 +584,10 @@ FROM PROD_CHANGE.ODS.CHC_ERA_835_LINE
 SELECT count(*) AS rwCnt --8,570,858,433
 FROM PROD_CHANGE.ODS.CHC_ERA_835_LINE 
 WHERE RECORD_STATUS_CD = 'a'
+
+
+psycopg2.OperationalError: could not connect to server: Connection timed out
+        Is the server running on host "db-pgsql-cm01.crmcza0drodc.us-east-1.rds.amazonaws.com" (172.31.34.235) and accepting
+        TCP/IP connections on port 5432?
+
+(core) ec2-user@ip-10-200-20-152 infrastructure_management (development) $ 
