@@ -591,3 +591,15 @@ psycopg2.OperationalError: could not connect to server: Connection timed out
         TCP/IP connections on port 5432?
 
 (core) ec2-user@ip-10-200-20-152 infrastructure_management (development) $ 
+
+practices missing claim zips        practice missing attrib report 
+T1MD0971                            T1MD0472  
+T1MD1170          
+T2MD0287          
+T2MD0370          
+T2MD0415          
+T2MD0481          
+T2MD0518          
+T2MD0522          
+T2MD0564          
+T2MD0575          
