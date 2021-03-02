@@ -1,8 +1,87 @@
 # read in the mbr mo grp by xlsx, open another wb, 
 import openpyxl
 
-wb = openpyxl.load_workbook('/Users/michael.oconnor/Downloads/mbrMosGrpbyFormat_2.xlsx')
-sheet = wb['Sheet1']
+# THE QUERY
+# USE WAREHOUSE INT_A3327;
+# USE DATABASE INT_A3327;
+# USE WAREHOUSE PROD_MEDSTAR_MDPCP;
+# USE DATABASE prod_medstar_mdpcp; 
+
+# select
+#     org_id
+# --  , org_level_category_cd
+# --  , org_group_id
+#   , period_id
+#   , measure_value_decimal
+# from insights.metric_value_operational_dashboard
+# --SNAPSHOT_PROD_MEDSTAR_MDPCP_20201118.insights.metric_value_operational_dashboard
+# where measure_cd = 'total_member_years_current_month'
+# 	and patient_medicare_group_cd = '#NA' 
+# 	and org_level_category_cd = 'aco'
+# 	and attribution_type = 'as_was'
+# 	and substr(period_id,3,7) >= '2019-01' 
+# order by org_id    
+#     	, substr(period_id,3,7)
+
+#  SELECT 'SELECT org_id, period_id, measure_value_decimal ' 
+ 
+# || 'FROM ' || database_name || '.' || 'insights.metric_value_operational_dashboard'
+# || ' WHERE measure_cd = ''' || 'total_member_years_current_month' 
+# || ''' and patient_medicare_group_cd = ''' || '#NA'
+# || ''' and org_level_category_cd = ''' || 'aco'
+# || ''' and attribution_type = ''' || 'as_was'
+# || ''' and substr(period_id,3,7) >= ''' || '2019-01'
+# --|| ''' order_by org_id, substr(period_id,3,7)'
+# || ''' UNION ALL '  AS queryPart
+# -- 
+# -- || '''' 
+# --|| SPLIT_PART(database_name,'_',2) || ''' AS ORG_ID, ' 
+# --|| ''''  || tbl.table_schema || '.' || tbl.table_name || ''' AS TableName, ' 
+# --|| 'MAX(Load_Ts) AS MaxLoadTS, Count(*) as rwCount FROM ' || database_name || '.' || tbl.table_schema || '.' || tbl.table_name	|| ';'
+
+# FROM information_schema.DATABASES
+# JOIN information_schema.TABLES tbl 
+# 	ON 1 = 1
+# JOIN information_schema.COLUMNS col
+# 	ON tbl.TABLE_NAME = col.TABLE_NAME 
+# 	AND tbl.TABLE_SCHEMA  = col.TABLE_SCHEMA 
+# 	AND col.COLUMN_NAME = 'LOAD_TS'
+# WHERE DATABASE_NAME LIKE 'PROD_%' AND SPLIT_PART(database_name,'_',3) = ''
+# --DATABASE_NAME NOT LIKE '%_FE'
+# 	AND tbl.TABLE_SCHEMA = 'INSIGHTS'
+# 						--'VRDC'	
+# 	AND tbl.table_name = 'METRIC_VALUE_OPERATIONAL_DASHBOARD'
+# 	AND SPLIT_PART(database_name,'_',2) IN (
+# 			'A1052'
+# 			, 'A2024'
+# 			, 'A2251'
+# 			, 'A2575'
+# 			, 'A2841'
+# 			, 'A3229'
+# 			, 'A3320'
+# 			, 'A3327'
+# 			, 'A3367'
+# 			, 'A3599'
+# 			, 'A3632'
+# 			, 'A3667'
+# 			, 'A3669'
+# 			, 'A3774'
+# 			, 'A3822'
+# 			, 'A4585'
+# 			, 'A4588'
+# 			, 'A4709'
+# 			, 'A4768'
+# 			, 'A4806'
+# 			, 'A4824'
+# 	) 
+# --ORDER BY DATABASE_NAME 	
+# union all
+# select 'order by org_id, substr(period_id,3,7)' as queryPart         
+
+wb = openpyxl.load_workbook('/Users/michael.oconnor/Downloads/mbrMosGrpbyFormat_3.xlsx')
+# wb = openpyxl.load_workbook('/Users/michael.oconnor/Downloads/mbrMosGrpbyFormat_mdpcp.xlsx')
+sheet = wb['Sheet11']
+# sheet = wb['snapshot']
 
 wb2 = openpyxl.Workbook()
 sheet2 = wb2.active
@@ -16,6 +95,7 @@ orgYrMoStruct = {}
 #         'Anne Arundel': {'pop': 537656, 'tracts': 104},
 #         'Baltimore': {'pop': 805029, 'tracts': 214},
 #         'Baltimore City': {'pop': 620961, 'tracts': 200},
+
 
 
 # read the rows and populate a dict, to get a distict list of orgs
@@ -94,4 +174,4 @@ for key, value in sorted_orgYrMoStruct.items():
     rwInx += 1
 
 # save the new wb
-wb2.save('/Users/michael.oconnor/mbrMoPvt_2.xlsx')
+wb2.save('/Users/michael.oconnor/mbrMoPvt_16.xlsx')
