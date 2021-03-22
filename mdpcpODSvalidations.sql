@@ -609,3 +609,10 @@ SELECT org_id, period_id, measure_value_decimal FROM PROD_A2251.insights.metric_
 SELECT org_id, period_id, measure_value_decimal FROM PROD_A2575.insights.metric_value_operational_dashboard WHERE measure_cd = 'total_member_years_current_month' and patient_medicare_group_cd = '#NA' and org_level_category_cd = 'aco' and attribution_type = 'as_was' and substr(period_id,3,7) >= '2019-01' UNION ALL 
 SELECT org_id, period_id, measure_value_decimal FROM PROD_A3632.insights.metric_value_operational_dashboard WHERE measure_cd = 'total_member_years_current_month' and patient_medicare_group_cd = '#NA' and org_level_category_cd = 'aco' and attribution_type = 'as_was' and substr(period_id,3,7) >= '2019-01'  
 order by org_id, substr(period_id,3,7)
+
+SELECT src_value:display::varchar AS dispRace
+FROM DEV_MICHAELOCONNOR.PUBLIC.QA_BB_TYPERESEARCH
+
+SELECT src_value
+FROM DEV_HUMANA.ods.BB_PATIENT_EXTENSION 
+WHERE LOAD_PERIOD  = 'm-2021-03'
