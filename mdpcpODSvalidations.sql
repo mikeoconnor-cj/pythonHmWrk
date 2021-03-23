@@ -616,3 +616,135 @@ FROM DEV_MICHAELOCONNOR.PUBLIC.QA_BB_TYPERESEARCH
 SELECT src_value
 FROM DEV_HUMANA.ods.BB_PATIENT_EXTENSION 
 WHERE LOAD_PERIOD  = 'm-2021-03'
+
+expose case/scenario queries
+
+1:  no elig flag records 
+
+--generic queries
+--line: 1567
+--expose case/scenario queries
+WITH 
+hccLayUp AS 
+(
+  SELECT fk_patient_id
+    , count(*) AS hccLayupCnt
+  FROM INSIGHTS.hcc_x_patient_undercoded_layup
+  GROUP BY FK_PATIENT_ID  
+), 
+assgn as
+(
+  SELECT FK_BENE_ID 
+    , count(*) AS assgnRecCnt
+  FROM ods.MDPCP_ASSGN_ATTRIBD 
+  WHERE 
+    RECORD_STATUS_CD = 'a'  
+  GROUP BY FK_BENE_ID 
+),
+plp AS 
+(
+  SELECT patient_id
+    , count(*) AS  plpRecCnt --null
+  FROM insights.PROFILE_LIST_PATIENT --nope
+  GROUP BY PATIENT_ID 
+),
+bened AS 
+(
+SELECT fk_bene_id
+  , count(*) AS benedMntCnt
+  , sum(CASE WHEN SRC_ELIG IS NULL THEN 1 ELSE 0 end) AS eligNullCnt
+FROM ods.MDPCP_BENED_MONTH 
+WHERE 
+  RECORD_STATUS_CD = 'a'
+GROUP BY FK_BENE_ID 
+)
+SELECT *
+FROM hccLayup
+LEFT JOIN assgn
+  ON HCCLAYUP.FK_PATIENT_ID = assgn.fk_bene_id
+LEFT JOIN plp
+  ON HCCLAYUP.FK_PATIENT_ID = plp.patient_id
+LEFT JOIN bened
+  ON HCCLAYUP.FK_PATIENT_ID = bened.fk_bene_id 
+WHERE plp.patient_id IS null
+
+--generic query
+--expose case/scenario queries
+WITH assgnRoster
+AS 
+(
+SELECT fk_bene_id AS assgnFKBeneID
+  , count(*) AS nbrOfQuarterlyRosters
+  , max(load_period) AS maxLP_Rostr
+FROM ods.MDPCP_ASSGN_ATTRIBD 
+WHERE RECORD_STATUS_CD = 'a'
+GROUP BY FK_BENE_ID 
+)
+, benedMos AS 
+(
+SELECT --c.SRC_BENE_MBI_ID 
+  c.FK_BENE_ID 
+  , count(*) AS nbrOfBenedMonths
+  , sum(CASE WHEN SRC_ELIG IS NULL THEN 1 ELSE 0 end) AS NbrRecordsEligNULL
+  , sum(CASE WHEN SRC_BUYIN IN ('3','C') THEN 1 ELSE 0 end) AS NbrRecordsBuyin3_C
+  , sum(CASE WHEN src_ms_cd = '10' THEN 1 ELSE 0 end) AS NbrRecordsMS_CD10
+  , sum(CASE WHEN src_ms_cd = '20' THEN 1 ELSE 0 end) AS NbrRecordsMS_CD20
+  , sum(CASE WHEN src_dual IN ('01', '02', '04', '08') THEN 1 ELSE 0 end) AS NbrRecordsDual
+  , sum(CASE WHEN src_dual IS NULL THEN 1 ELSE 0 end) AS NbrRecordsDualNULL
+FROM ods.MDPCP_BENED_MONTH c
+INNER JOIN ods.mdpcp_bened_year d
+        ON c.fk_bene_id = d.fk_bene_id
+        AND substring(c.src_month_cd,3,4) = d.src_year
+        AND c.src_ps_id = d.src_ps_id
+  AND c.RECORD_STATUS_CD = 'a'
+  AND D.RECORD_STATUS_CD = 'a'
+GROUP BY c.FK_BENE_ID 
+) 
+SELECT *
+FROM ASSGNROSTER a
+LEFT JOIN benedMos b 
+  ON a.assgnFKBeneID = b.fk_bene_id
+WHERE nbrRecordsEligNull = NbrOfBenedMonths
+  AND nbrRecordsBuyIn3_C > 0
+ORDER BY fk_bene_id 
+  
+
+2:  one max load period record
+
+--line: 1270
+SELECT FK_BENE_ID
+  , max(load_period) AS maxLP
+  , count(*) AS rwCnt
+FROM ods.MDPCP_ASSGN_ATTRIBD 
+GROUP BY FK_BENE_ID
+HAVING count(*) = 1
+  AND max(load_period) = 'q-2021-1'
+ORDER BY FK_BENE_ID
+  
+
+
+3:  mid year attrib load period
+
+--line: 1353
+WITH orgAndBene
+AS
+(
+SELECT ORG_ID 
+  , FK_BENE_ID 
+  , SPLIT_PART(LOAD_PERIOD,'-',2) AS loadPerYear
+  , LOAD_PERIOD 
+  , max(LOAD_PERIOD) OVER (partition BY FK_BENE_ID, SPLIT_PART(LOAD_PERIOD,'-',2)) AS maxForBene
+  , max(LOAD_PERIOD) OVER (partition BY Org_ID, SPLIT_PART(LOAD_PERIOD,'-',2)) AS maxForOrg
+FROM ods.MDPCP_ASSGN_ATTRIBD 
+ORDER BY LOAD_PERIOD 
+)
+SELECT *
+FROM orgAndBene o
+WHERE maxForOrg > maxForBene
+  AND NOT EXISTS 
+    (SELECT 1
+     FROM orgAndBene o2
+     WHERE o.fk_bene_id = o2.fk_bene_id
+     AND o2.maxForOrg = o2.maxForBene
+    )
+ORDER BY fk_bene_id, LOAD_period
