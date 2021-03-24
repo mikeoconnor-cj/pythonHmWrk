@@ -748,3 +748,56 @@ WHERE maxForOrg > maxForBene
      AND o2.maxForOrg = o2.maxForBene
     )
 ORDER BY fk_bene_id, LOAD_period
+
+
+--pk fix
+USE WAREHOUSE prod_medstar_mdpcp;
+USE DATABASE prod_medstar_mdpcp;
+
+UPDATE ods.MDPCP_ASSGN_ATTRIBD 
+SET PK_ASSGN_ATTRIBD_ID = REPLACE(PK_ASSGN_ATTRIBD_ID, ' Quarter','_Q')
+WHERE load_period = 'q-2021-1'
+
+UPDATE ods.MDPCP_ASSGN_TERMD  
+SET PK_ASSGN_TERMD_ID = REPLACE(PK_ASSGN_TERMD_ID, ' Quarter','_Q')
+WHERE load_period = 'q-2021-1'
+
+
+
+--qa checks on existing data: 
+--check: all records with LP of q-2021-1 have the issue
+  --same count w/out 'And Contains'
+SELECT 
+SRC_PS_ID 
+, count(*) AS rwCnt
+FROM ods.MDPCP_ASSGN_ATTRIBD 
+WHERE load_period = 'q-2021-1'
+  AND CONTAINS(PK_ASSGN_ATTRIBD_ID, ' Quarter')
+GROUP BY SRC_PS_ID 
+
+--check: no records outside of q-2021-1 with the issue
+SELECT 
+SRC_PS_ID 
+, count(*) AS rwCnt
+FROM ods.MDPCP_ASSGN_ATTRIBD 
+WHERE load_period <> 'q-2021-1'
+  AND CONTAINS(PK_ASSGN_ATTRIBD_ID, ' Quarter')
+GROUP BY SRC_PS_ID 
+
+--check: all records with LP of q-2021-1 have the issue
+  --same count w/out 'And Contains'
+SELECT SRC_PS_ID 
+  , count(*) AS rwCnt
+FROM ods.MDPCP_ASSGN_TERMD 
+WHERE load_period = 'q-2021-1'
+  AND CONTAINS(PK_ASSGN_TERMD_ID, ' Quarter')
+GROUP BY SRC_PS_ID
+
+--check: no records outside of q-2021-1 with the issue
+SELECT SRC_PS_ID 
+  , count(*) AS rwCnt
+FROM ods.MDPCP_ASSGN_TERMD 
+WHERE load_period <> 'q-2021-1'
+  AND CONTAINS(PK_ASSGN_TERMD_ID, ' Quarter')
+GROUP BY SRC_PS_ID
+
