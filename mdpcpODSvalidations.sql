@@ -801,3 +801,17 @@ WHERE load_period <> 'q-2021-1'
   AND CONTAINS(PK_ASSGN_TERMD_ID, ' Quarter')
 GROUP BY SRC_PS_ID
 
+
+SELECT *
+FROM ods.BB_COVERAGE_EXTENSION cvg_ext
+JOIN ods.bb_coverage cvg
+  ON cvg_ext.FK_COVERAGE_ID = REPLACE(cvg.PK_COVERAGE_ID,'cms_mssp','cms_bb')
+  AND cvg.SRC_STATUS = 'active'
+  AND cvg.src_type = 'Part B'
+  AND cvg_ext.SRC_URL LIKE '%rfrnc%'
+JOIN ods.bb_patient
+  ON cvg_ext.FK_PATIENT_ID = REPLACE(bb_patient.pk_patient_id,'cms_mssp','cms_bb')
+WHERE CVG_EXT.RECORD_STATUS_CD = 'a'
+  AND cvg.RECORD_STATUS_CD = 'a'
+  AND bb_patient.record_status_cd = 'a'
+ORDER BY cvg_ext.load_ts desc
