@@ -815,3 +815,92 @@ WHERE CVG_EXT.RECORD_STATUS_CD = 'a'
   AND cvg.RECORD_STATUS_CD = 'a'
   AND bb_patient.record_status_cd = 'a'
 ORDER BY cvg_ext.load_ts desc
+
+
+USE WAREHOUSE prod_medstar_mdpcp;
+USE DATABASE prod_medstar_mdpcp;
+
+  --row counts insight tables
+SELECT
+      tbl.table_schema
+    , tbl.table_name
+    , 'SELECT ' || ''''  || tbl.table_schema || '.' || tbl.table_name || ''' AS TableName, ' || 'MAX(Load_Ts) AS MaxLoadTS, MAX(load_period) as MaxLoadPer, Count(*) as rwCount FROM ' 
+    || tbl.table_schema || '.' || tbl.table_name || ' where substr(load_period,3,7) = ''2021-05'''
+    || ' UNION ALL '
+    AS Query
+FROM information_schema.tables tbl
+join information_schema.columns col
+    on tbl.table_name = col.table_name
+    and tbl.table_schema = col.table_schema
+  and col.column_name = 'LOAD_PERIOD'
+WHERE 
+    tbl.table_schema = 'INSIGHTS'  
+union all
+select 'zzz' as table_schema
+    , 'zzz' as table_name
+    , 'order by TableName' as Query
+ORDER BY table_schema, table_name
+
+  --member months group level
+
+Select ORG_GROUP_ID   
+ , period_id  
+  , measure_value_decimal AS totlForGroup 
+from insights.metric_value_operational_dashboard  
+where measure_cd = 'total_member_years_current_month' 
+  and patient_medicare_group_cd = '#NA' 
+  and org_level_category_cd = 'at_time_tin'
+  and attribution_type = 'as_was'
+  and substr(period_id,3,7) >= '2019-01' 
+order by ORG_GROUP_ID   
+  ,  period_id   
+
+
+--pop insights
+  --member months org level, across databases
+  
+ SELECT 'SELECT org_id, period_id, measure_value_decimal ' 
+|| 'FROM ' || database_name || '.' || 'insights.metric_value_operational_dashboard'
+|| ' WHERE measure_cd = ''' || 'total_member_years_current_month' 
+|| ''' and patient_medicare_group_cd = ''' || '#NA'
+|| ''' and org_level_category_cd = ''' || 'aco'
+|| ''' and attribution_type = ''' || 'as_was'
+|| ''' and substr(period_id,3,7) >= ''' || '2019-01'
+|| ''' UNION ALL '  AS queryPart
+FROM information_schema.DATABASES
+JOIN information_schema.TABLES tbl 
+  ON 1 = 1
+JOIN information_schema.COLUMNS col
+  ON tbl.TABLE_NAME = col.TABLE_NAME 
+  AND tbl.TABLE_SCHEMA  = col.TABLE_SCHEMA 
+  AND col.COLUMN_NAME = 'LOAD_TS'
+WHERE DATABASE_NAME LIKE 'PROD_%' AND SPLIT_PART(database_name,'_',3) = ''
+  AND tbl.TABLE_SCHEMA = 'INSIGHTS'
+  AND tbl.table_name = 'METRIC_VALUE_OPERATIONAL_DASHBOARD'
+  AND SPLIT_PART(database_name,'_',2) IN (
+      'A1052'
+      , 'A2024'
+      , 'A2251'
+      , 'A2575'
+      , 'A2841'
+      , 'A3229'
+      , 'A3320'
+      , 'A3327'
+      , 'A3367'
+      , 'A3599'
+      , 'A3632'
+      , 'A3667'
+      , 'A3669'
+      , 'A3774'
+      , 'A3822'
+      , 'A4585'
+      , 'A4588'
+      , 'A4709'
+      , 'A4768'
+      , 'A4806'
+      , 'A4824'
+  )   
+union all
+select 'order by org_id, substr(period_id,3,7)' as queryPart  
+
+
