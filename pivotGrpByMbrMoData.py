@@ -76,11 +76,31 @@ import openpyxl
 # 	) 
 # --ORDER BY DATABASE_NAME 	
 # union all
-# select 'order by org_id, substr(period_id,3,7)' as queryPart         
+# select 'order by org_id, substr(period_id,3,7)' as queryPart  
+# 
+# another measure: ' WHERE measure_cd = ''' || 'total_pmpy_current_month' 
+#
+# 
+# MDPCP with member months at 'at_time_tin' org_level
+# Select ORG_GROUP_ID  	
+# --  , ORG_GROUP_NAME 
+#  , period_id	
+#   , measure_value_decimal AS totlForGroup	
+# from insights.metric_value_operational_dashboard	
+# where measure_cd = 'total_member_years_current_month'	
+# 	and patient_medicare_group_cd = '#NA' 
+# 	and org_level_category_cd = 'at_time_tin'
+# 	and attribution_type = 'as_was'
+# 	and substr(period_id,3,7) >= '2019-01' 
+# order by ORG_GROUP_ID 
+# --	, ORG_GROUP_NAME  	
+# 	,  period_id       
+
+
 
 wb = openpyxl.load_workbook('/Users/michael.oconnor/Downloads/mbrMosGrpbyFormat_3.xlsx')
 # wb = openpyxl.load_workbook('/Users/michael.oconnor/Downloads/mbrMosGrpbyFormat_mdpcp.xlsx')
-sheet = wb['Sheet11']
+sheet = wb['Sheet37']
 # sheet = wb['snapshot']
 
 wb2 = openpyxl.Workbook()
@@ -174,4 +194,4 @@ for key, value in sorted_orgYrMoStruct.items():
     rwInx += 1
 
 # save the new wb
-wb2.save('/Users/michael.oconnor/mbrMoPvt_16.xlsx')
+wb2.save('/Users/michael.oconnor/mbrMoPvt_43.xlsx')
