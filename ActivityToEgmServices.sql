@@ -13,21 +13,11 @@ SELECT SPLIT_PART(PK_ACTIVITY_ID,'|', 3) AS clm_id
 	, claim_line_allowed_amt AS pay
 	, FACILITY_PLACE_OF_SERVICE_CD AS pos_cd
 	, FACILITY_NPI_NUM AS prf_at_grp_npi
-	
+	, SPLIT_PART(fk_provider_operating_id,'|',2) AS prf_op_physn_npi
+	, split_part(fk_diagnosis_id_list[0],'|',2 )AS primary_dx
+	, PROVIDER_RENDERING_SPECIALTY_CD AS prov_spec		
 	, FACILITY_REVENUE_CENTER_CD AS rev_cd
-	
-	
-	, FK_PROCEDURE_ID 
-	, PROCEDURE_HCPCS_CD 
 
-	, PROCEDURE_HCPCS_MOD_CD_LIST[2] AS mod3
-	, PROCEDURE_HCPCS_MOD_CD_LIST 	
-	, PROCEDURE_ICD_9_CD 
-	, PROCEDURE_ICD_10_CD 
-	, MEDICATION_NDC_SPL_CD	
-	, MEDICATION_HCPCS_CD
-	, DME_HCPCS_CD
-	, claim_type_cd
 	, CASE 
 		WHEN claim_type_cd = '40' THEN 'op'
 		WHEN claim_type_cd IN ('70','71') THEN 'pb'
@@ -43,7 +33,22 @@ SELECT SPLIT_PART(PK_ACTIVITY_ID,'|', 3) AS clm_id
 		WHEN ACTIVITY_TYPE_CD = 'dme'	
 			THEN DME_HCPCS_CD
 		ELSE PROCEDURE_HCPCS_CD 			
-	  END AS src_code
-	  , ACTIVITY_TYPE_CD 
-	  , PK_ACTIVITY_ID 
+	  END AS src_code	
+	, activity_from_dt AS svc_from_dt
+	, activity_thru_dt AS svc_thru_dt
+	
+--supporting data	
+	, FK_PROCEDURE_ID 
+	, PROCEDURE_HCPCS_CD 
+
+	, PROCEDURE_HCPCS_MOD_CD_LIST[2] AS mod3
+	, PROCEDURE_HCPCS_MOD_CD_LIST 	
+	, PROCEDURE_ICD_9_CD 
+	, PROCEDURE_ICD_10_CD 
+	, MEDICATION_NDC_SPL_CD	
+	, MEDICATION_HCPCS_CD
+	, DME_HCPCS_CD
+	, claim_type_cd
+  	, ACTIVITY_TYPE_CD 
+  	, PK_ACTIVITY_ID 
 FROM insights.ACTIVITY 
