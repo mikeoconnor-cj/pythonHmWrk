@@ -57,3 +57,48 @@ FROM insights.ACTIVITY
 -- CPT modifiers
 -- The two code sets are so similar, in fact, that you can regularly use modifiers from one codeset to the other. The HCPCS modifier –LT, for example, is regularly used in CPT codes when you need to describe a bilateral procedure that was only performed on one side of the body.
 -- HCPCS modifiers, like CPT modifiers, are always two characters, and are added to the end of a HCPCS or CPT code with a hyphen. When differentiating between a CPT modifier and a HCPCS modifier, all there’s one simple rule: if the modifier has a letter in it, it’s a HCPCS modifier. If that modifier is entirely numeric, it’s a CPT modifier.
+
+
+
+
+--HCPCS modifiers
+
+-- E1: upper left eyelid
+-- E2: lower left eyelid
+-- E3: upper right eyelid
+-- E4: lower right eyelid
+-- FA: left hand, thumb
+-- F1: left hand, second digit 
+-- F2: left hand, third digit 
+-- F3: left hand, fourth digit 
+-- F4: left hand, fifth digit 
+-- F5: right hand, thumb
+-- F6: right hand, second digit 
+-- F7: right hand, third digit 
+-- F8: right hand, fourth digit 
+-- F9: right hand, fifth digit
+
+-- LC: left circumflex coronary artery
+-- LD: left anterior descending coronary artery
+-- LT: left side (used to identify procedures performed on the left side of the body)
+
+-- RC: right coronary artery
+-- RT: right side
+-- (used to identify procedures performed on the right side of the body)
+-- TA: left foot, great toe
+-- T1: left foot, second digit 
+-- T2: left foot, third digit 
+-- T3: left foot, fourth digit 
+-- T4: left foot, fifth digit
+-- T5: right foot, great toe
+-- T6: right foot, second digit 
+-- T7: right foot, third digit 
+-- T8: right foot, fourth digit 
+-- T9: right foot, fifth digit
+
+
+-- GG: performance and payment of a screening mammogram
+-- and diagnostic mammogram on the same patient, same day
+-- GH: diagnostic mammogram converted from screening mammogram on same day
+-- QM: ambulance service provided under arrangement by a provider of services
+-- QN: ambulance service furnished directly by a provider of services
