@@ -1,12 +1,11 @@
 --EGM Services
 SELECT SPLIT_PART(PK_ACTIVITY_ID,'|', 3) AS clm_id 
 	, SPLIT_PART(PK_ACTIVITY_ID,'|', 4) AS line_num
-	, FK_PATIENT_ID AS bene_key ---for Change, there's a hash for a2024 there's an org_src_id prefix
-	--not an accurate regex for body modifier yet
+	, FK_PATIENT_ID AS bene_key ---for Change, there's a hash for a2024, there's an org_src_id prefix
 	, CASE 
-		WHEN regexp_like(PROCEDURE_HCPCS_MOD_CD_LIST[0],'[A-Z]{2}') THEN PROCEDURE_HCPCS_MOD_CD_LIST[0]
-		WHEN regexp_like(PROCEDURE_HCPCS_MOD_CD_LIST[1],'[A-Z]{2}') THEN PROCEDURE_HCPCS_MOD_CD_LIST[1]
-		WHEN regexp_like(PROCEDURE_HCPCS_MOD_CD_LIST[2],'[A-Z]{2}') THEN PROCEDURE_HCPCS_MOD_CD_LIST[2]
+		WHEN regexp_like(PROCEDURE_HCPCS_MOD_CD_LIST[0],'E[1-4]|FA|F[1-9]|L[CDT]|R[CT]|TA|T[1-9]') THEN PROCEDURE_HCPCS_MOD_CD_LIST[0]
+		WHEN regexp_like(PROCEDURE_HCPCS_MOD_CD_LIST[1],'E[1-4]|FA|F[1-9]|L[CDT]|R[CT]|TA|T[1-9]') THEN PROCEDURE_HCPCS_MOD_CD_LIST[1]
+		WHEN regexp_like(PROCEDURE_HCPCS_MOD_CD_LIST[2],'E[1-4]|FA|F[1-9]|L[CDT]|R[CT]|TA|T[1-9]') THEN PROCEDURE_HCPCS_MOD_CD_LIST[2]
 	  END AS body_mod
 	, PROCEDURE_HCPCS_MOD_CD_LIST[0] AS mod_1
 	, PROCEDURE_HCPCS_MOD_CD_LIST[1] AS mod_2
@@ -52,3 +51,9 @@ SELECT SPLIT_PART(PK_ACTIVITY_ID,'|', 3) AS clm_id
   	, ACTIVITY_TYPE_CD 
   	, PK_ACTIVITY_ID 
 FROM insights.ACTIVITY 
+
+
+-- do we need 
+-- CPT modifiers
+-- The two code sets are so similar, in fact, that you can regularly use modifiers from one codeset to the other. The HCPCS modifier –LT, for example, is regularly used in CPT codes when you need to describe a bilateral procedure that was only performed on one side of the body.
+-- HCPCS modifiers, like CPT modifiers, are always two characters, and are added to the end of a HCPCS or CPT code with a hyphen. When differentiating between a CPT modifier and a HCPCS modifier, all there’s one simple rule: if the modifier has a letter in it, it’s a HCPCS modifier. If that modifier is entirely numeric, it’s a CPT modifier.
