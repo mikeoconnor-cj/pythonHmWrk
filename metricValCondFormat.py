@@ -4,19 +4,23 @@ from openpyxl.styles import Font, colors, PatternFill
 from openpyxl.utils.dataframe import dataframe_to_rows
 
 # wb = load_workbook('/Users/michaeloconnor/Downloads/metricValOperDashMbrMoDevPublish20200205.xlsx')
-wb = load_workbook('/Users/michael.oconnor/Documents/QAdateAnalysis_Prod_20200625_vdi.xlsx')
+wb = load_workbook('/Users/michael.oconnor/mbrMoPvt_45.xlsx')
+# /Users/michael.oconnor/Downloads/QAdateAnalysis_Prod_20201016.xlsx'
 # worksheet_names = wb.sheetnames # this variable is presented as a list, so we can manipulate it accordingly, but finding the index number using the name.
 # print(worksheet_names)
 # sheet_index = worksheet_names.index('mbr mo v3') # this will return the index number where your worksheet resides.  It should be mentioned that this sheet name must exist in the worksheet_names list variable
 # wb.active = sheet_index
 
-ws = wb.active
+# ws = wb.active
+ws = wb['Member Months']
 # df = pd.read_excel('/Users/michaeloconnor/Downloads/metricValOperDashMbrMoDevPublish20200205.xlsx')
-df = pd.read_excel('/Users/michael.oconnor/Documents/QAdateAnalysis_Prod_20200625_vdi.xlsx')
+df = pd.read_excel('/Users/michael.oconnor/mbrMoPvt_45.xlsx', sheet_name='Member Months')
+# /Users/michael.oconnor/Downloads/QAdateAnalysis_Prod_20201016.xlsx
 # # print(df)
 #
-df1 = df[['org_id', 'org_level_category_cd', 'org_group_id', 'Jan-19', 'Feb-19', 'Mar-19', 'Apr-19', 'May-19', 'Jun-19'
-    , 'Jul-19', 'Aug-19', 'Sep-19', 'Oct-19', 'Nov-19', 'Dec-19', 'Jan-20', 'Feb-20', 'Mar-20', 'Apr-20', 'May-20', 'Jun-20']]
+# df1 = df[['org_id', 'org_level_category_cd', 'org_group_id', 'Jul-19', 'Aug-19', 'Sep-19', 'Oct-19', 'Nov-19', 'Dec-19', 'Jan-20', 'Feb-20', 'Mar-20', 'Apr-20', 'May-20', 'Jun-20', 'Jul-20', 'Aug-20', 'Sep-20']]
+df1 = df[['org_id', 'org_level_category_cd', 'org_group_id', 'm-2019-01','m-2019-02','m-2019-03','m-2019-04','m-2019-05','m-2019-06','m-2019-07','m-2019-08','m-2019-09','m-2019-10','m-2019-11','m-2019-12','m-2020-01','m-2020-02','m-2020-03','m-2020-04','m-2020-05','m-2020-06','m-2020-07','m-2020-08','m-2020-09','m-2020-10','m-2020-11','m-2020-12','m-2021-01','m-2021-02','m-2021-03','m-2021-04','m-2021-05','m-2021-06', 'm-2021-07']]
+# , 'm-2021-01','m-2021-02','m-2021-03'
 
 # df1 = df[['org_id', 'org_level_category_cd', 'org_group_id', 'q-2018-1', 'q-2018-2', 'q-2018-3', 'q-2018-4', 'q-2019-1', 'q-2019-2'
 #     , 'q-2019-3', 'q-2019-4', 'q-2020-1']]
@@ -35,7 +39,9 @@ for r_idx, row in enumerate(rows, 1):
         if r_idx > 1 and c_idx > 4:
             curVal = df1.iloc[r_idx - 2, c_idx - 1]  #need to adjust indexes to 0 based, excluding header rw
             priorVal = df1.iloc[r_idx - 2, c_idx - 2]
-            absDiff = abs(curVal - priorVal)
+            absDiff = abs(curVal - priorVal) * 1.0  # convert to float
+
+            # checkCalc = absDiff / priorVal # runtime warning: invalid value encountered in double_scalars
             #avoid divide by zero and get the 0 prior val to ### curVal excluding the 0 prior and 0 cur case
             if (priorVal > 0 and absDiff / priorVal > .05) or (absDiff == curVal and absDiff != 0):
             # if df1.iloc[r_idx - 2, c_idx - 1] == 44415 and df1.iloc[r_idx - 2, c_idx - 2] == 44415:
@@ -56,4 +62,6 @@ for r_idx, row in enumerate(rows, 1):
 #         #ws['A1'] = 42
 #
 # # wb.save('/Users/michael.oconnor/Documents/memberMoAttribFormattedProd_202003.xlsx')
-wb.save('/Users/michael.oconnor/Documents/QAdateAnalysis_Prod_20200625_vdi.xlsx')
+wb.save('/Users/michael.oconnor/mbrMoPvt_31_formatted.xlsx')
+# wb.save('/Users/michael.oconnor/pmpy_2_formatted.xlsx')
+# /Users/michael.oconnor/Downloads/QAdateAnalysis_Prod_20201016_v02.xlsx
