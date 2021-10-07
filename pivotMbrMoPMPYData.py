@@ -102,7 +102,9 @@ import openpyxl
 
 
 
-wb = openpyxl.load_workbook('/Users/michael.oconnor/Downloads/ops1360_1.xlsx')
+# wb = openpyxl.load_workbook('/Users/michael.oconnor/Downloads/ops1360_1.xlsx')
+# linux
+wb = openpyxl.load_workbook('/home/ec2-user/pythonWrk/mbrMo_LP202009.xlsx')
 # wb = openpyxl.load_workbook('/Users/michael.oconnor/Downloads/mbrMosGrpbyFormat_mdpcp.xlsx')
 sheet = wb['Member Months']
 # sheet = wb['PMPY']
@@ -198,4 +200,6 @@ for key, value in sorted_orgYrMoStruct.items():
     rwInx += 1
 
 # save the new wb
-wb2.save('/Users/michael.oconnor/mbrMoPvt_62.xlsx')
+# wb2.save('/Users/michael.oconnor/mbrMoPvt_62.xlsx')
+# linux
+wb2.save('/home/ec2-user/pythonHmWrk/mbrMoPvt_63.xlsx')
