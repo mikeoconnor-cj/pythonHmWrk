@@ -1,0 +1,13 @@
+Client's count of claims zips was correct but there's missing data for the following provider groups: 
+
+group T1MD0466 missing part b physician data that would be contained in V02 and V03 zips. 
+
+group T1MD0568 missing part b physician data that would be contained in V02 and V03 zips.
+
+group T1MD1005 is missing V01 (main packet) and V02 zips that would contain all file types except ptb in V01 and ptb data in V02.  So client just sent to us the V03 zip of the ptb overflow. 
+
+group T2MD0370 missing part b physician data that would be contained in V02 and V03 zips.
+
+The way the zips work is that if ptb claim lines are less that or equal 160k rows, the group should have a single zip (V01) of all the claim file types (pta,ptb, ptd etc).  If ptb exceeds 160k the ptb will be removed from V01 and go to a V02+ zip(s).  Each of the overflow pt b zips contain only 160k before breaking to the next zip.  So, for example, if there are more than 320k total lines then we should get a V02, V03, V04 of ptb b data.  
+
+One easy way for client to tell there's missing data is that there's as gap in version numbers such as in second case below: 
