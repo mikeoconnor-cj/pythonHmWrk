@@ -22,7 +22,7 @@ elems = landingPageFileSoup.select('img[data-lazy-img]')
 #     print(elem)
 #     print(elem.parent)
 #     print(elem.parent.get('href'))
-print(elems[0].parent.get('href'))
+# print(elems[0].parent.get('href'))
 newLatestHref = elems[0].parent.get('href')
 parseSequenceNo = re.compile(r'\d\d\d\d\d\d')
 mo = parseSequenceNo.search(elems[0].parent.get('href'))
@@ -30,7 +30,7 @@ mo = parseSequenceNo.search(elems[0].parent.get('href'))
 newLatestSeqStr = mo.group(0)
 
 
-# update the log excel file
+# access the log excel file
 curWD = Path.cwd()
 
 filePth = curWD / 'politicoURLlog.xlsx'
@@ -39,6 +39,7 @@ ws = wb.active
 curHref = ws.cell(row=2, column=1).value
 curSeq = ws.cell(row=2, column=2).value
 
+
 # write latest data to spreadsheet
 if curHref != newLatestHref: 
     ws.cell(row=2, column=1).value = newLatestHref
@@ -46,35 +47,51 @@ if curHref != newLatestHref:
     strFilePth = str(filePth)
     wb.save(strFilePth)
 
+    # delete the old files
+    # ~/Downloads/pythonHmWrk/politico  # this doesn't work
+    # file iterator on target directory, ? use glob, use unlink()
+    p = Path('/Users/michaeloconnor/Downloads/pythonHmWrk/politico')
+    myPPObjList = list(p.glob('*'))  # PosixPaths
+
+    for indx, FQfName in enumerate(myPPObjList):
+        print('Deleting...', str(indx), FQfName)
+
+    # save the new ones .. parse out filenames using regex
+    # F\d\d*-.*\.(jpg|jpeg|pdf|gif|png|tiff|bmp|svg)
+    print(newLatestHref)
+    res2 = requests.get(newLatestHref)
+    res2.raise_for_status()
+
+    latestComicsSoup = bs4.BeautifulSoup(res2.text, 'html.parser')
+
+    latestComicElems = latestComicsSoup.select('img[data-lazy-img]')
+
+    parseLatestComicFname = re.compile(r'F\d\d*-.*\.(jpg|jpeg|pdf|gif|png|tiff|bmp|svg)')
+
+    for elem in latestComicElems:
+        # print(elem.getText())
+        # print(elem.attrs)
+        # print(elem['data-lazy-img'])
+        print('Downloading image %s...' % (elem['data-lazy-img']))
+        mtchObj = parseLatestComicFname.search(elem['data-lazy-img'])
+        print(mtchObj.group(0))
+        imgURLfileName = mtchObj.group(0)
+        pathFname = '/politico/' + imgURLfileName
+        imgURLfilePth = open(os.path.abspath(curWD) + pathFname, 'wb')
+
+        res3 = requests.get(elem['data-lazy-img'])
+        res3.raise_for_status()
+        for chunk in res3.iter_content(100000):
+            imgURLfilePth.write(chunk)
+        imgURLfilePth.close()
+
+else:
+    print('comics are up-to-date')
+
 wb.close()
 
 
-print(elems[0].parent.get('href'))
-res2 = requests.get(elems[0].parent.get('href'))
-res2.raise_for_status()
-
-latestComicsSoup = bs4.BeautifulSoup(res2.text, 'html.parser')
-
-latestComicElems = latestComicsSoup.select('img[data-lazy-img]')
-
-parseLatestComicFname = re.compile(r'F\d\d*-.*\.(jpg|jpeg|pdf|gif|png|tiff|bmp|svg)')
-
-for elem in latestComicElems:
-    # print(elem.getText())
-    # print(elem.attrs)
-    # print(elem['data-lazy-img'])
-    print('Downloading image %s...' % (elem['data-lazy-img']))
-    mtchObj = parseLatestComicFname.search(elem['data-lazy-img'])
-    print(mtchObj.group(0))
-    imgURLfileName = mtchObj.group(0)
-    pathFname = '/politico/' + imgURLfileName
-    imgURLfilePth = open(os.path.abspath(curWD) + pathFname, 'wb')
-
-    res3 = requests.get(elem['data-lazy-img'])
-    res3.raise_for_status()
-    for chunk in res3.iter_content(100000):
-        imgURLfilePth.write(chunk)
-    imgURLfilePth.close() 
+ 
 
 # # print(mo.group(2))
 # flickrImgUrl = mo.group(2)
@@ -88,20 +105,6 @@ for elem in latestComicElems:
 #     imageFile.write(chunk)
 # imageFile.close()
 
-
-# ~/Downloads/pythonHmWrk/politico  # this doesn't work
-# file iterator on target directory, ? use glob, use unlink()
-p = Path('/Users/michaeloconnor/Downloads/pythonHmWrk/politico')
-myPPObjList = list(p.glob('*'))  # PosixPaths
-
-for indx, FQfName in enumerate(myPPObjList):
-    print(str(indx), FQfName)
-
-# delete the old files
-
-
-# save the new ones .. parse out filenames using regex
-# F\d\d*-.*\.(jpg|jpeg|pdf|gif|png|tiff|bmp|svg)
 
 
 # remember to save to git hub to protect the script.  
