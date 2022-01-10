@@ -55,10 +55,11 @@ if curHref != newLatestHref:
 
     for indx, FQfName in enumerate(myPPObjList):
         print('Deleting...', str(indx), FQfName)
+        os.unlink(FQfName)
 
     # save the new ones .. parse out filenames using regex
     # F\d\d*-.*\.(jpg|jpeg|pdf|gif|png|tiff|bmp|svg)
-    print(newLatestHref)
+    # print(newLatestHref)
     res2 = requests.get(newLatestHref)
     res2.raise_for_status()
 
@@ -74,7 +75,7 @@ if curHref != newLatestHref:
         # print(elem['data-lazy-img'])
         print('Downloading image %s...' % (elem['data-lazy-img']))
         mtchObj = parseLatestComicFname.search(elem['data-lazy-img'])
-        print(mtchObj.group(0))
+        # print(mtchObj.group(0))
         imgURLfileName = mtchObj.group(0)
         pathFname = '/politico/' + imgURLfileName
         imgURLfilePth = open(os.path.abspath(curWD) + pathFname, 'wb')
