@@ -41,7 +41,7 @@ try:
         password='abim@3l^Fs3',
         account='carejourney.us-east-1.privatelink',
         private_key=pkb,
-        warehouse='PROD_A2024',
+        warehouse='local_michaeloconnor',
         database='PROD_A2024'
         # schema=SCHEMA
         )
@@ -60,20 +60,27 @@ try:
                 ,'PROD_A3320'
                 ,'PROD_A3327'
                 ,'PROD_A3367'
-                ,'PROD_A3599'
+                # ,'PROD_A3599'
                 ,'PROD_A3632'
                 ,'PROD_A3667'
                 ,'PROD_A3669'
-                ,'PROD_A3774'
+                # ,'PROD_A3774'
                 ,'PROD_A3822'
                 ,'PROD_A4585'
                 ,'PROD_A4709'
                 ,'PROD_A4768'
-                ,'PROD_A4806'
-                #   'PROD_MEDSTAR_MDPCP'
+                # ,'PROD_A4806'
+                #  'PROD_MEDSTAR_MDPCP'
                 # 'PROD_ADAUGEOPI'
                 # ,'PROD_ILUMEDPI'
-                # ,'PROD_CARELINEPI'
+                # , 'PROD_LATITUDEDC'
+                # , 'PROD_BLUEROCKDC'
+                # , 'PROD_CITYBLOCKDCE'
+                # , 'PROD_INTERMNTUTDC'
+                # , 'PROD_CANODCE' 
+                # , 'PROD_ELATIONDCE'               
+                # ,
+                # 'PROD_CARELINEPI'
                 ]
 
 
@@ -103,7 +110,7 @@ try:
                                             columns='PERIOD_ID',
                                             aggfunc=np.sum),2)
 
-        pivot.to_excel('/home/ec2-user/pythonWrk/mbrMoPvt_72.xlsx')
+        pivot.to_excel('/home/ec2-user/pythonWrk/mbrMoPvt_87.xlsx')
 
 
     def createXLpivotWithPandaPivotsOrgLvl():
@@ -141,7 +148,7 @@ try:
 
                   
 
-        pivot.to_excel('/home/ec2-user/pythonWrk/mbrMoPvt_76.xlsx')
+        pivot.to_excel('/home/ec2-user/pythonWrk/mbrMoPvt_93.xlsx')
 
     def createXLpivotWithPandaPivotsOrgLvlPMPY():
         table_results = []
@@ -176,7 +183,7 @@ try:
 
                   
 
-        pivot.to_excel('/home/ec2-user/pythonWrk/mbrMoPvt_75.xlsx')            
+        pivot.to_excel('/home/ec2-user/pythonWrk/mbrMoPvt_94.xlsx')            
 
 # after the fxn defs
     orgDB = orgDBList[0] # when limitinig the list to just one like MDPCP
@@ -185,9 +192,9 @@ try:
 
     createXLpivotWithPandaPivotsOrgLvl()
 
-    # createXLpivotWithPandaPivotsOrgLvlPMPY()
+    createXLpivotWithPandaPivotsOrgLvlPMPY()
 
-
+    # createXLpivotWithPandaPivot()  #will run one at a time for dce
 
 except Exception as e:
     print(e)

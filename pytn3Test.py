@@ -41,7 +41,7 @@ try:
         password='abim@3l^Fs3',
         account='carejourney.us-east-1.privatelink',
         private_key=pkb,
-        warehouse='PROD_A2024',
+        warehouse='local_michaeloconnor',
         database='PROD_A2024'
         # schema=SCHEMA
         )
@@ -75,38 +75,48 @@ try:
                 # 'PROD_A1052'
                 # ,
                 # 'PROD_A2024'
-                #uhs
+                # uhs
                 # ,
                 # 'PROD_A2251'
                 # ,'PROD_A2575'
-                # ,'PROD_A2841'
-                #banner2
-                # ,'PROD_A3229'
-                #,
-                #uhs2
+                # ,
+                # 'PROD_A2841'
+                # banner2
+                # ,
+                # 'PROD_A3229'
+                # uhs2
                 # ,'PROD_A3320'
-                #,'PROD_A3327'
-                #uhs2  
+                # ,'PROD_A3327'
+                # uhs2  
                 # ,'PROD_A3367'
-                # ,'PROD_A3599'
-                # ,'PROD_A3632'
-                #uhs
+                # ,'PROD_A3599'  --X
+                # ,
+                # 'PROD_A3632'
+                # uhs
                 # ,'PROD_A3667'
-                #uhs
+                # uhs
                 # ,'PROD_A3669'
-                #intermountain
-                # ,'PROD_A3774'
+                # intermountain
+                # ,'PROD_A3774' --X
                 # ,'PROD_A3822'
-                #uhs
+                # uhs
                 # ,'PROD_A4585'
-                #uhs2
+                # uhs2
                 # ,'PROD_A4709'
                 # ,'PROD_A4768'
-                # ,'PROD_A4806'
-                #   'PROD_MEDSTAR_MDPCP'
-                'PROD_ADAUGEOPI'
-                , 'PROD_ILUMEDPI'
-                # ,  'PROD_CARELINEPI'
+                # ,'PROD_A4806'  --X
+                'PROD_MEDSTAR_MDPCP'
+                #   'PROD_ADAUGEOPI'
+                # , 
+                # 'PROD_ILUMEDPI'
+                # , 'PROD_LATITUDEDC'
+                # , 'PROD_BLUEROCKDC'
+                # , 'PROD_CITYBLOCKDCE'
+                # , 'PROD_INTERMNTUTDC'
+                # , 'PROD_CANODCE'
+                # , 'PROD_ELATIONDCE'
+                # , 
+                # 'PROD_CARELINEPI'
                 ]
 
     importantODStables = [
@@ -136,24 +146,26 @@ try:
             , 'cclf_expu_2_snf'
             , 'cclf_expu_3_snf'
             , 'cclf_ng_align'
-            , 'nh_network_model_0_hdr'
-            , 'dce_align'
-            , 'dce_palmr'
+            , 
+            'nh_network_model_0_hdr'
+            # , 'dce_align'
+            # , 'dce_palmr'
+            # , 'dce_risk_score'
             # , 'pcf_align_attribd'
             # , 
-            # 'mdpcp_assgn_attribd'
-            # , 'mdpcp_assgn_termd'
-            # , 'mdpcp_bened'
-            # , 'mdpcp_bened_month'
-            # , 'mdpcp_bened_year'
-            # , 'mdpcp_ptaclm'
-            # , 'mdpcp_ptadgn'
-            # , 'mdpcp_ptaprc'
-            # , 'mdpcp_ptarev'
-            # , 'mdpcp_ptbdme'
-            # , 'mdpcp_ptbphy'
-            # , 'mdpcp_ptd'
-            # , 'mdpcp_stat'
+            , 'mdpcp_assgn_attribd'
+            , 'mdpcp_assgn_termd'
+            , 'mdpcp_bened'
+            , 'mdpcp_bened_month'
+            , 'mdpcp_bened_year'
+            , 'mdpcp_ptaclm'
+            , 'mdpcp_ptadgn'
+            , 'mdpcp_ptaprc'
+            , 'mdpcp_ptarev'
+            , 'mdpcp_ptbdme'
+            , 'mdpcp_ptbphy'
+            , 'mdpcp_ptd'
+            , 'mdpcp_stat'
     ]
 
     importantTables = [
@@ -175,6 +187,9 @@ try:
         , 'metric_value_qexpu'
         , 'hcc_x_patient_year'
         , 'hcc_x_patient_undercoded_layup'
+        , 'metric_value_patient_x_claim_layup'
+        , 'patient_roster'
+        , 'episode_x_visit'
     ]
 
     # creating a manual dictionary for now, in furture use pprint output
@@ -227,7 +242,26 @@ try:
                     'hcc_x_patient_undercoded_layup': ['dos_year'
                                                         , 'hcc'
                                                         , 'hcpcs_ra_flag'
-                                                        , 'org_id' ]
+                                                        , 'org_id' 
+                                                        , 'fk_patient_id'
+                                                        , 'version'
+                                                        , 'frailty_group'
+                                                        , 'risk'
+                                                        , 'medicare_cohort'],
+                    # ,
+                    # 'metric_value_patient_x_claim_layup': ['fk_patient_id'
+                    #                                         , 'month_cd'
+                    #                                         , 'org_id'
+                    #                                         , 'qexpu_header_cd'],
+                    # 'patient_roster': ['fk_group_id'
+                    #                     , 'fk_network_id'
+                    #                     , 'fk_patient_id'
+                    #                     , 'fk_provider_id'
+                    #                     , 'month_cd'
+                    #                     , 'org_id'],
+                    'episode_x_visit': ['fk_episode_id'
+                                        ,'fk_visit_id'
+                                        , 'measure_id']
                     }
 
     odsTblPKfieldDict = {'cclf_0_summ_stat': 'pk_cclf_stat_id',
@@ -277,10 +311,10 @@ try:
                             'cclf_expu_3_snf': ['load_run_id', 'pk_expu_snf_id'],
                             'cclf_ng_align': ['eff_start_dt', 'load_run_id', 'pk_ng_align_id'],
                             'nh_network_model_0_hdr': ['eff_start_dt', 'load_run_id', 'pk_net_mdl_hdr_id']
-                            ,'dce_align': ['load_run_id', 'pk_dce_align_id']
-                            ,'dce_palmr': ['load_run_id', 'pk_dce_palmr_id']
-                            # ,
-                            # 'pcf_align_attribd': ['load_run_id', 'pk_pcf_align_attribd_id']
+                            # ,'dce_align': ['load_run_id', 'pk_dce_align_id']
+                            # ,'dce_palmr': ['load_run_id', 'pk_dce_palmr_id']
+                            # ,'dce_risk_score': ['load_run_id', 'pk_dce_risk_score_id']
+                            # ,'pcf_align_attribd': ['load_run_id', 'pk_pcf_align_attribd_id']
                             }
 
     # def test2(tableDict):
@@ -524,16 +558,120 @@ try:
 
         return df13   
 
+    def test8(load_period):
+        importantMDPCPODStbls = [x for x in importantODStables if 'mdpcp' in x]
+        print('running practice count for load period check...')
+        table_results = []
+
+        for table in importantMDPCPODStbls:
+
+            if table == 'mdpcp_stat':
+                grpField = 'src_practice_id'
+            else:
+                grpField = 'src_ps_id'
+
+            sqlString = '''WITH groupCheck
+                            AS
+                            (
+                            SELECT {practice}--statistics file needs src_practice_id
+                                , count(*) AS rwsPerPID
+                            FROM {orgDB}.ods.{mdpcp_table} 
+                            WHERE LOAD_PERIOD = '{lp}'
+                            GROUP BY {practice}
+                            )
+                            SELECT '{mdpcp_table}' AS tblName
+                                , '{lp}' AS loadPer 
+                                , count({practice}) AS grpPrctsCount
+                            FROM GROUPCHECK'''.format(practice=grpField,mdpcp_table=table,lp=load_period,orgDB=orgDB)
+            # print(sqlString)
+            sf_cursor.execute(sqlString)
+            results = sf_cursor.fetchall()
+            table_results.append([results[0][0], results[0][1], results[0][2]])
+
+        df14 = pd.DataFrame(table_results, columns=["tableName", "loadPeriod", "practiceCount"]) 
+
+        return df14
+
+    def test9():
+        print('display data for ea org in cclf assgn 0 header...')
+
+        table_results = []
+
+        sqlString = '''SELECT '{orgDB}' as orgDB
+                    , load_period 
+                    , src_assgn_period 
+                    , src_assgn_period_type_cd 
+                    , src_bene_assgn_window_start_dt 
+                    , src_bene_assgn_window_end_dt 
+                    , src_mssp_aco_report_period_start_dt 
+                    , src_hcc_start_dt 
+                    , src_risk_score_start_dt 
+                    , src_aco_track 
+                    , src_performance_year 
+                    , src_claims_processed_as_of_dt 
+                FROM {orgDB}.ODS.CCLF_ASSGN_0_HEADER 
+                WHERE record_status_cd = 'a'
+                ORDER BY src_assgn_period'''.format(orgDB=orgDB)
+       
+            # print(sqlString)
+        sf_cursor.execute(sqlString)
+        # results = sf_cursor.fetchall()
+        # table_results.append([results[0][0], results[0][1], results[0][2], results[0][3], results[0][4], results[0][5], results[0][6], results[0][7], results[0][8], results[0][9], results[0][10], results[0][11]])
+
+        # df15 = pd.DataFrame(table_results, columns=["orgDB", "load_period", "src_assgn_period", "src_assgn_period_type_cd", "src_bene_assgn_window_start_dt", "src_bene_assgn_window_end_dt", "src_mssp_aco_report_period_start_dt", "src_hcc_start_dt", "src_risk_scort_start_dt", "src_aco_track", "src_performance_year", "src_claims_processed_as_of_dt"]) 
+        df15 = sf_cursor.fetch_pandas_all()
+        return df15
+
+    def test10():
+        print('describe the numeric fields in the MDPCP Roster Attribd data')  
+        table_results = []
+
+        sqlString = '''WITH allActive
+                        AS
+                        (
+                        SELECT SRC_PS_ID 
+                            , FK_BENE_ID 
+                            , LOAD_PERIOD 
+                            , RECORD_STATUS_CD 
+                            , SRC_BENE_DOB 
+                            , SRC_BENE_SEX_CD 
+                            , SRC_RISK_SCORE 
+                            --, CAST(SRC_ADI_QUINTILE AS int) AS SRC_ADI_QUINTILE
+                            , CAST(SRC_ADI_QUINTILE AS number(14,3)) AS SRC_ADI_QUINTILE
+                            , ROW_NUMBER() OVER (PARTITION BY FK_BENE_ID ORDER BY LOAD_PERIOD desc) AS rwNo
+                        FROM {orgDB}.ods.MDPCP_ASSGN_ATTRIBD 
+                        WHERE LOAD_PERIOD IN ('q-2022-2','q-2022-1')
+                            AND RECORD_STATUS_CD = 'a'
+                        ORDER BY load_period DESC 
+                        )
+                        SELECT SRC_PS_ID 
+                            , FK_BENE_ID 
+                            , LOAD_PERIOD 
+                            , RECORD_STATUS_CD 
+                            , SRC_BENE_SEX_CD
+                            , SRC_BENE_DOB 
+                            , SRC_RISK_SCORE 
+                            , SRC_ADI_QUINTILE 
+                        FROM allActive
+                        WHERE rwNo = 1'''.format(orgDB=orgDB)
+
+        sf_cursor.execute(sqlString)
+        df16 = sf_cursor.fetch_pandas_all()
+        df17 = df16.describe()
+        df17['Statistic'] = df17.index
+        print(df17)
+        return df17
 
 
     orgCount = 1
     all_test_results = {}
 
-    output_file_path = '/home/ec2-user/pythonWrk/allTest_DCE_Orgs_11.xlsx'
+    output_file_path = '/home/ec2-user/pythonWrk/allTest_MDPCPorgJune.xlsx'
 
     for org_db in orgDBList:
         orgDB = org_db
-        orgDBCompare = orgDB + '_FE'
+        # orgDBCompare = orgDB + '_FE'
+        orgDBCompare = orgDB.replace('PROD','INT') + '_FE'
         orgDBCompare2 = '''SNAPSHOT_{orgDB}_20211019'''.format(orgDB = orgDB)
         # if they're not swapping ods to fe, the compare db for ods is like: SNAPSHOT_PROD_A1052_20210929
 
@@ -545,21 +683,30 @@ try:
         df_prod = test1()   # calling the fxn
         df_merge = test2()
         df_dups = dupCheckTest(tablePKDict)
-        df_aco_x = test3()
+        # df_aco_x = test3()
         df_ods_prod = test4()
         df_ods_merge = test5()
         df_ccs_prod = test6()
         df_ccs_merge = test7()
         df_ods_dups = dupCheckODStest(odsTblCompositePKDict)
+        # df_assgn_0 = test9()
 
         all_test_results['insCountMax {orgDB}'.format(orgDB=orgDB.lower())] = df_prod # we don't need this in the excel file
         all_test_results['insCountMaxC {orgDB}'.format(orgDB=orgDB.lower())] = df_merge
         all_test_results['dupInsCheck {orgDB}'.format(orgDB=orgDB.lower())] = df_dups
-        all_test_results['acoXdupMonth {orgDB}'.format(orgDB=orgDB.lower())] = df_aco_x
+        # all_test_results['acoXdupMonth {orgDB}'.format(orgDB=orgDB.lower())] = df_aco_x
         all_test_results['odsCountMax {orgDB}'.format(orgDB=orgDB.lower())] = df_ods_prod # we don't need this in the excel file
         all_test_results['odsCountMaxC {orgDB}'.format(orgDB=orgDB.lower())] = df_ods_merge 
         all_test_results['ccsCompare {orgDB}'.format(orgDB=orgDB.lower())] = df_ccs_merge
         all_test_results['dupODSchk {orgDB}'.format(orgDB=orgDB.lower())] = df_ods_dups
+        # all_test_results['assgn0hdr {orgDB}'.format(orgDB=orgDB.lower())] = df_assgn_0
+
+
+        if orgDB == 'PROD_MEDSTAR_MDPCP':
+            df_ods_mdpcp = test8('q-2022-2')
+            all_test_results['MDPCP_ps_id {orgDB}'.format(orgDB=orgDB.lower())] = df_ods_mdpcp
+            df_desc_rstr = test10()
+            all_test_results['RstrDesc {orgDB}'.format(orgDB=orgDB.lower())] = df_desc_rstr
 
         orgCount += 1
     
